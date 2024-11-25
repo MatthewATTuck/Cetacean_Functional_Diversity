@@ -3,9 +3,9 @@
     "path": "~/GitHub/Matthew-Tuck-honours/MatthewTuck_Honours/scripts/practice_markdown.Rmd",
     "project_path": "scripts/practice_markdown.Rmd",
     "type": "r_markdown",
-    "hash": "0",
+    "hash": "4050551872",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1732147249523.0,
     "source_on_save": false,
     "relative_order": 1,
@@ -18,11 +18,11 @@
         "last_setup_crc32": "6b31f14fb9167bc9"
     },
     "folds": "",
-    "lastKnownWriteTime": 1732147327,
+    "lastKnownWriteTime": 1732497137,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1732147430415,
+    "last_content_update": 1732497137279,
     "read_only": false,
     "read_only_alternatives": []
 }
