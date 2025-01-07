@@ -40,7 +40,7 @@ DELPHINIDAE,Lagenorhynchus_obscurus,B,A,A,C,C,A,C,C,1,1,1,1,1,1,1,1,0,1
 DELPHINIDAE,Lissodelphis_borealis,B,B,A,C,A,A,F,C,1,1,1,1,1,0,1,1,1,0
 DELPHINIDAE,Lissodelphis_peronii,B,B,A,C,B,B,F,C,1,1,1,1,1,0,1,1,0,1
 BALAENOPTERIDAE,Megaptera_novaeangliae,B,D,C,B,A,A,B,A,1,1,1,1,1,1,1,1,1,0
-ZIPHIIDAE,Mesoplodon_bidens,B,C,B,D,C,D,B,C,1,1,1,1,1,1,1,1,0,1
+ZIPHIIDAE,Mesoplodon_bidens,B,C,B,D,C,D,B,C,1,1,1,1,0,1,1,1,0,1
 ZIPHIIDAE,Mesoplodon_bowdoini,B,C,B,D,A,D,B,C,1,1,1,1,0,0,1,1,0,1
 ZIPHIIDAE,Mesoplodon_carlhubbsi,B,C,B,D,A,D,B,C,1,1,1,1,0,0,1,1,1,0
 ZIPHIIDAE,Mesoplodon_densirostris,B,C,B,D,C,D,B,C,1,1,1,1,1,1,1,1,0,1
