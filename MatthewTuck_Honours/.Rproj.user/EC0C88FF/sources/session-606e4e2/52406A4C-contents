@@ -146,7 +146,7 @@ fe_perm_a <- array(NA, dim = c(11,2,0)) # create an array with 2 col & 11 rows f
 fb_jac_perm_a <- array(NA, dim = c(11,11,0)) # create an array with 11 col & rows for functional B-diversity results
 
 for (i in c(1:n_perm)) { 
-  multif_perm_a <- abind(multif_perm_a, multif_perm[[i]]) # FRic & FDis
+  multif_perm_a <- abind(multif_perm_a, multif_perm[[i]]) # FDis
   fe_perm_a <- abind(fe_perm_a, fe_perm[[i]]) # FE indices
 } # merge each elemnt of the lists as dimensions of the arrays
 
