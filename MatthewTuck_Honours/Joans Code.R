@@ -148,7 +148,7 @@ fb_jac_perm_a <- array(NA, dim = c(11,11,0)) # create an array with 11 col & row
 for (i in c(1:n_perm)) { 
   multif_perm_a <- abind(multif_perm_a, multif_perm[[i]]) # FDis
   fe_perm_a <- abind(fe_perm_a, fe_perm[[i]]) # FE indices
-} # merge each elemnt of the lists as dimensions of the arrays
+} # merge each element of the lists as dimensions of the arrays
 
 multif_perm_mean <- matrix(NA, ncol = 1, nrow= 11, dimnames = list(rownames(multif_perm_a), colnames(multif_perm_a))) # matrix to save mean values of FDis permutations
 multif_perm_sd <- matrix(NA, ncol = 1, nrow= 11, dimnames = list(rownames(multif_perm_a), colnames(multif_perm_a))) # matrix to save sd values of FDis permutations 
@@ -186,7 +186,6 @@ for (i in 1:11) {
 ses_multif <- (func_ind_sp$functional_diversity_indices[,c("fdis")] - multif_perm_mean) / multif_perm_sd # SES functional multidimensional alpha diversity indices
 ses_fe <- (func_ind_fe$asb_fdfe[,c("fred", "fvuln")] - fe_perm_mean) / fe_perm_sd # SES FE indices
 ses_fbjac <- ((as.matrix(fb$funct.beta.jtu)) - fb_jac_perm_mean) / fb_jac_perm_sd # SES functional Jaccard's B-diversity
-
 
 ###############
 ### The end ###
