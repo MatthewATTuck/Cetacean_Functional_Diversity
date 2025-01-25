@@ -224,7 +224,7 @@ func_ent_nm <- sp.to.fe(sp_traits_nm, trait_info_nm, fe_nm_type = "fe_rank") # c
 func_ind_fe_nm <- alpha.fd.fe(sp_comm_biog_nm, sp_to_fe = func_ent_nm) # compute UTC derived indices
 func_ind_fe_nm$asb_fdfe # UTC Functional indexes
 
-
+####Funrar####
 sp_traits_unique_nm<-as.matrix(func_dist_sp_nm) #setting the functional dissimilarity data as a matrix
 unique_sp_nm<-funrar(pres_matrix = sp_comm_biog_nm, dist_matrix = sp_traits_unique_nm, rel_abund = FALSE) #calculating the number of unique trait assemblages in the data set
 uniqueness_nm<-uniqueness(sp_comm_biog_nm, sp_traits_unique_nm) #calculating "uniqueness" for each species in the data set
@@ -250,10 +250,15 @@ for(i in seq(n_perm)){
                                 verbose = F) #  Null Distribution for FDis
   
   multif_perm_nm[[i]] <- multif_n_nm$functional_diversity_indices["fdis"] # store null FDis results 
+  hist(sapply(multif_perm_nm, "[[", 1))
+  multif_perm_nm
   
   func_ind_fe_n_nm <- alpha.fd.fe(sp_comm_n_nm, sp_to_fe = func_ent_nm) # Null FE indices
   fe_perm_nm[[i]] <- func_ind_fe_n_nm$asb_fdfe[,c("fred", "fvuln")]} # store null FRed indices result
-
+fe_perm_nm
+fe_perm_nm[,1]
+hist(sapply(fe_perm_nm, "[[", 1))
+hist(sapply(fe_perm_nm, "[[", 3))
 #### Wrap Null Distribution Results ####
 multif_perm_a_nm <- array(NA, dim = c(2,1,0)) # create an array with 1 col & 2 rows for null FDis results
 fe_perm_a_nm <- array(NA, dim = c(2,2,0)) # create an array with 1 col & 2 rows for FRed indices results
@@ -278,11 +283,12 @@ for (i in 1:2) {
   for (j in 1:2) {
     fe_perm_mean_nm[i,j] = mean(fe_perm_a_nm[i,j,])
     fe_perm_sd_nm[i,j] = sd(fe_perm_a_nm[i,j,]) }
-}
+  
+}#mean and sd for the FRed indicies
 
 #### SES and p-values ####
 ses_multif_nm <- (func_ind_sp_nm$functional_diversity_indices[,c("fdis")] - multif_perm_mean_nm) / multif_perm_sd_nm # SES functional multidimensional alpha diversity indices
-ses_multif_nm
+head(ses_multif_nm)
 pnorm(ses_multif_nm)
 
 ses_fe_nm <- (func_ind_fe_nm$asb_fdfe[,c("fred")] - fe_perm_mean_nm) / fe_perm_sd_nm # SES FE indices FRed
@@ -335,4 +341,28 @@ sd_max_length_perm
 
 ses_max_length_pceez<-(morphometric_means$mean_length - mean_max_length_perm)/sd_max_length_perm
 ses_max_length_pceez
+pnorm(ses_max_length_pceez)
 #End of Code
+
+
+
+####CWM####
+library(FD)
+cetacean_CWMs<-data.frame(functcomp(sp_traits, sp_comm_biog, CWM.type = c("all")))
+cetacean_CWMs<-data.frame(t(cetacean_CWMs))
+cetacean_CWMs<-rownames_to_column(cetacean_CWMs, "trait_designation")
+CWMs<-c(cetacean_CWMs$PCEEZ, cetacean_CWMs$Global)
+CWMs_plots<-data.frame(CWMs)
+CWMs_plots$trait_types<-c("max_length", "max_length", "max_length", "max_length", "max_mass", "max_mass", "max_mass", "max_mass", "max_mass_length_ratio", "max_mass_length_ratio", "max_mass_length_ratio", "dentition", "dentition", "dentition", "dentition", "migration", "migration", "migration", "max_diving_depth", "max_diving_depth", "max_diving_depth", "max_diving_depth", "average_group_size", "average_group_size", "average_group_size", "average_group_size", "average_group_size", "average_group_size", "prey_choice", "prey_choice", "prey_choice", "prey_choice", "prey_choice", "max_length", "max_length", "max_length", "max_length", "max_mass", "max_mass", "max_mass", "max_mass", "max_mass_length_ratio", "max_mass_length_ratio", "max_mass_length_ratio", "dentition", "dentition", "dentition", "dentition", "migration", "migration", "migration", "max_diving_depth", "max_diving_depth", "max_diving_depth", "max_diving_depth", "average_group_size", "average_group_size", "average_group_size", "average_group_size", "average_group_size", "average_group_size", "prey_choice", "prey_choice", "prey_choice", "prey_choice", "prey_choice")
+CWMs_plots$location<-c("PCEEZ", "PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ", "PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ", "Global", "Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global")
+CWMs_plots$trait_labels<-c("A", "B", "C", "D", "A", "B", "C", "D", "A", "B", "C", "A", "B", "C", "D", "A", "B", "C", "A", "B", "C", "D", "A", "B", "C", "D", "E", "F", "A", "B", "C", "D", "E", "A", "B", "C", "D", "A", "B", "C", "D", "A", "B", "C", "A", "B", "C", "D", "A", "B", "C", "A", "B", "C", "D", "A", "B", "C", "D", "E", "F", "A", "B", "C", "D", "E")
+CWMs_plots$traitdesignations<-c(cetacean_CWMs$trait_designation,cetacean_CWMs$trait_designation) 
+CWMs_plots
+
+
+ggplot(CWMs_plots, aes(fill=trait_labels, x=location, y=CWMs))+
+  geom_bar(position="stack", stat = "identity")+
+  facet_wrap(~trait_types, ncol=2, nrow=4, scale="free_x")
+  theme_light()
+
+

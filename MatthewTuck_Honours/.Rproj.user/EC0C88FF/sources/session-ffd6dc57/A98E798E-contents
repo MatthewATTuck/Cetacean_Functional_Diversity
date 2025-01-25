@@ -39,4 +39,4 @@ ggplot(cetacean_dataset, aes(x=average_group_size))+
 ggplot(cetacean_dataset, aes(x=prey_choice))+
   geom_bar(stat="count")
 
-
+ggplot(cetacean_raw_data, aes(x=, y=))
