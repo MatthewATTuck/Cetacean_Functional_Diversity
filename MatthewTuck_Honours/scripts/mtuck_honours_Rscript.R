@@ -195,6 +195,7 @@ sp_comm_biog_nm<-(t(sp_comm_biog_nm)) #transpose matrix for use in the alpha.fd.
 
 
 ####Unique Species Null Distribution and SES####
+library(funrar)
 sp_traits_unique_nm<-as.matrix(func_dist_sp_nm) #setting the functional dissimilarity data as a matrix
 unique_sp_nm<-funrar(pres_matrix = sp_comm_biog_nm, dist_matrix = sp_traits_unique_nm, rel_abund = FALSE) #calculating the number of unique trait assemblages in the data set
 uniqueness_nm<-uniqueness(sp_comm_biog_nm, sp_traits_unique_nm) #calculating "uniqueness" for each species in the data set
@@ -241,7 +242,7 @@ sd_unique_sp_perm_nm
 
 ses_unique_sp_perm_nm<-(number_of_uniques_PCEEZ - mean_unique_sp_perm_nm)/sd_unique_sp_perm_nm
 ses_unique_sp_perm_nm
-2*pnorm(1.241043, mean=0, sd=1, lower.tail=FALSE)
+2*pnorm(1.333395, mean=0, sd=1, lower.tail=FALSE)
 #calculating the SES of the PCEEZ region and p-value
 
 #### PCoA coordinate construction ####
@@ -335,6 +336,8 @@ fdis_mean_nm<-fdis_mean_nm[1,1]
 fdis_sd_nm<-as.data.frame(multif_perm_sd_nm)
 fdis_sd_nm<-fdis_sd_nm[1,1]
 fdis_mean_PCEEZ<-func_ind_fdis_nm[1]
+fdis_mean_nm
+fdis_sd_nm
 fdis_mean_PCEEZ
 
 
@@ -344,6 +347,9 @@ fred_sd_nm<-as.data.frame(fe_perm_sd_nm)
 fred_sd_nm<-fred_sd_nm[1,1]
 fred_mean_PCEEZ<-as.data.frame(func_ind_fe_nm$asb_fdfe)
 fred_mean_PCEEZ<-fred_mean_PCEEZ[1,3]
+fred_mean_nm
+fred_sd_nm
+fred_mean_PCEEZ
 #making it so these values will update automatically in the ggplot code later after analysis is rerun
 
 
@@ -470,9 +476,10 @@ cetacean_CWMs<-data.frame(t(cetacean_CWMs))
 cetacean_CWMs<-rownames_to_column(cetacean_CWMs, "trait_designation")
 CWMs<-c(cetacean_CWMs$PCEEZ, cetacean_CWMs$Global)
 CWMs_plots<-data.frame(CWMs)
-CWMs_plots$Categories<-factor(c("Small", "Medium", "Large", "Very Large", "Small", "Medium", "Large", "Very Large", "Low", "Medium", "High", "FCT", "LB", "NFCT", "SB", "Epipelagic", "Upper Mesopelagic", "Lower Mesopelagic", "Bathypelagic", "Solitary", "Small", "Small-Medium", "Medium", "Medium-Large", "Large", "Cephalopods", "Fish", "High Vertebrates", "Non-Cephalopod Invertebrates", "Zooplankton"), levels = c("Solitary", "Low", "Small", "Small-Medium", "Medium", "Medium-Large", "Large", "Very Large", "High", "LB", "SB", "FCT", "NFCT", "Epipelagic", "Upper Mesopelagic", "Lower Mesopelagic", "Bathypelagic", "Zooplankton", "Non-Cephalopod Invertebrates", "Cephalopods", "Fish", "High Vertebrates"))
+CWMs_plots$Categories<-factor(c("Small", "Medium", "Large", "Very Large", "Small", "Medium", "Large", "Very Large", "Low", "Medium", "High", "Functional Calcareous Teeth", "Long Baleen", "Non Functional Calcareous Teeth", "Short Baleen", "Epipelagic", "Upper Mesopelagic", "Lower Mesopelagic", "Bathypelagic", "Solitary", "Small", "Small-Medium", "Medium", "Medium-Large", "Large", "Cephalopods", "Fish", "High Vertebrates", "Non-Cephalopod Invertebrates", "Zooplankton"), levels = c("Solitary", "Low", "Small", "Small-Medium", "Medium", "Medium-Large", "Large", "Very Large", "High", "Long Baleen", "Short Baleen", "Functional Calcareous Teeth", "Non Functional Calcareous Teeth", "Epipelagic", "Upper Mesopelagic", "Lower Mesopelagic", "Bathypelagic", "Zooplankton", "Non-Cephalopod Invertebrates", "Cephalopods", "Fish", "High Vertebrates"))
+CWMs_plots$title_labels<-c("Max Length", "Max Length", "Max Length", "Max Length", "Max Mass", "Max Mass", "Max Mass", "Max Mass", "Max Mass/Length Ratio", "Max Mass/Length Ratio", "Max Mass/Length Ratio", "Dentition", "Dentition", "Dentition", "Dentition", "Max Diving Depth", "Max Diving Depth", "Max Diving Depth", "Max Diving Depth", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Prey Choice", "Prey Choice", "Prey Choice", "Prey Choice", "Prey Choice", "Max Length", "Max Length", "Max Length", "Max Length", "Max Mass", "Max Mass", "Max Mass", "Max Mass", "Max Mass/Length Ratio", "Max Mass/Length Ratio", "Max Mass/Length Ratio", "Dentition", "Dentition", "Dentition", "Dentition", "Max Diving Depth", "Max Diving Depth", "Max Diving Depth", "Max Diving Depth", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Prey Choice", "Prey Choice", "Prey Choice", "Prey Choice", "Prey Choice")
 CWMs_plots$trait_types<-c("Max Length", "Max Length", "Max Length", "Max Length", "Max Mass", "Max Mass", "Max Mass", "Max Mass", "Max Mass/Length Ratio", "Max Mass/Length Ratio", "Max Mass/Length Ratio", "Dentition", "Dentition", "Dentition", "Dentition", "Max Diving Depth", "Max Diving Depth", "Max Diving Depth", "Max Diving Depth", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Prey Choice", "Prey Choice", "Prey Choice", "Prey Choice", "Prey Choice", "Max Length", "Max Length", "Max Length", "Max Length", "Max Mass", "Max Mass", "Max Mass", "Max Mass", "Max Mass/Length Ratio", "Max Mass/Length Ratio", "Max Mass/Length Ratio", "Dentition", "Dentition", "Dentition", "Dentition", "Max Diving Depth", "Max Diving Depth", "Max Diving Depth", "Max Diving Depth", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Average Group Size", "Prey Choice", "Prey Choice", "Prey Choice", "Prey Choice", "Prey Choice")
-CWMs_plots$location<-c("PCEEZ", "PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ", "PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","PCEEZ","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global")
+CWMs_plots$location<-c("OPB", "OPB","OPB","OPB","OPB","OPB","OPB","OPB", "OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","OPB","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global","Global")
 CWMs_plots$trait_labels<-c("A", "B", "C", "D", "A", "B", "C", "D", "A", "B", "C", "A", "B", "C", "D", "A", "B", "C", "D", "A", "B", "C", "D", "E", "F", "A", "B", "C", "D", "E", "A", "B", "C", "D", "A", "B", "C", "D", "A", "B", "C", "A", "B", "C", "D", "A", "B", "C", "D", "A", "B", "C", "D", "E", "F", "A", "B", "C", "D", "E")
 CWMs_plots #Creating a dataframe which contains relevant location and community weighted means for every trait assessed.
 
@@ -499,12 +506,32 @@ fisher_test_group_size
 fisher_prey<-data.frame(Cephalopods=(c(0.52*25, 0.45454545*88)), Fish=(c(0.16*25, 0.37500000*88)), High_Vertebrates=(c(0.04*25, 0.01136364*88)), Non_Cephalopod_Invertebrates=(c(0.04*25, 0.01136364*88)), Zooplankton=(c(0.24*25, 0.14772727*88)))
 row.names(fisher_prey)<-c("PCEEZ", "Global")
 fisher_prey
-fisher_test_prey<-fisher.test(fisher_group_size)
+fisher_test_prey<-fisher.test(fisher_prey)
 fisher_test_prey
+
+fisher_dentition_trial<-data.frame(LB=(c(0.04*100, 0.05*100)), SB=(c(0.24*100, 0.13*100)), FCT=(c(0.56*100, 0.59*100)), NFCT=(c(0.16*100, 0.24*100)))
+row.names(fisher_dentition_trial)<-c("PCEEZ", "Global")
+fisher_test_dentition_trial<-fisher.test(fisher_dentition_trial)
+fisher_test_dentition_trial
+
+fisher_diving_trial<-data.frame(epipelagic=(c(0.20*100, 0.39*100)), upper_mesopleagic=(c(0.36*100, 0.18*100)), lower_mesopelagic=(c(0.16*100, 0.11*100)), bathypelagic=(c(0.28*100, 0.32*100)))
+row.names(fisher_diving_trial)<-c("PCEEZ", "Global")
+fisher_test_diving_trial<-fisher.test(fisher_diving_trial)
+fisher_test_diving_trial
+
+fisher_group_size_trial<-data.frame(Solitary=(c(0.16*100, 0.13*100)), Small=(c(0.32*100, 0.44*100)), Small_Medium=(c(0.12*100, 0.17*100)), Medium=(c(0.16*100, 0.09*100)), Medium_Large=(c(0.08*100, 0.06*100)), Large=(c(0.16*100, 0.11*100)))
+row.names(fisher_group_size_trial)<-c("PCEEZ", "Global")
+fisher_test_group_size_trial<-fisher.test(fisher_group_size_trial)
+fisher_test_group_size_trial
+
+fisher_prey_trial<-data.frame(Cephalopods=(c(0.52*100, 0.45*100)), Fish=(c(0.16*100, 0.38*100)), High_Vertebrates=(c(0.04*100, 0.01*100)), Non_Cephalopod_Invertebrates=(c(0.04*100, 0.01*100)), Zooplankton=(c(0.24*100, 0.15*100)))
+row.names(fisher_prey_trial)<-c("PCEEZ", "Global")
+fisher_test_prey_trial<-fisher.test(fisher_prey_trial)
+fisher_test_prey_trial
 
 ####box plots for continuous variables dataframe setup####
 comparitive_boxplots_PCEEZ<-data.frame(cetacean_ind_traits_pceez$max_length_m, cetacean_ind_traits_pceez$max_mass_kg, cetacean_ind_traits_pceez$max_mass_max_length_ratio)
-comparitive_boxplots_PCEEZ$Location<-rep(c("PCEEZ"), 25)
+comparitive_boxplots_PCEEZ$Location<-rep(c("OPB"), 25)
 comparitive_boxplots_PCEEZ<-comparitive_boxplots_PCEEZ%>%
   rename("Max Length (m)" = cetacean_ind_traits_pceez.max_length_m, "Max Mass (kg)"= cetacean_ind_traits_pceez.max_mass_kg, "Max Mass/Max Length Ratio (kg/m)"=cetacean_ind_traits_pceez.max_mass_max_length_ratio)
 comparitive_boxplots_PCEEZ
@@ -882,3 +909,8 @@ ggplot(dentition_null_plots, aes(x=dentition_SB.PCEEZ))+
   theme(axis.title.y = element_text(vjust = 3)) +
   theme(axis.title.x = element_text(vjust = -1))+
   labs(x="Community Weighted Mean", y="Frequency")
+
+
+citation()
+citation(package="mFD")
+citation(package="funrar")
