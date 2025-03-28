@@ -1,0 +1,207 @@
+
+###########################################################################################################
+### Figure 1 & 2: Glabal and provinces functional spaces + Species Kernel density + diversity barplots  ###
+###########################################################################################################
+
+## Global and Functional space of vent biogeoprovinces
+######################################################
+
+# Create a FE coordinate matrix in the functional space from species dissimilarities
+fe_faxes <- data.frame(PC1 = sp_faxes[, "PC1"], PC2 = sp_faxes[,"PC2"], PC3 = sp_faxes[,"PC3"], PC4 = sp_faxes[,"PC4"] ) # select species 4 first axes
+fe_faxes$fe <- func_ent$sp_fe # add FE to each species
+fe_faxes <- fe_faxes[c(which(duplicated(fe_faxes$fe) == FALSE)),] # select unique FE 
+rownames(fe_faxes) <- fe_faxes$fe # change rownames
+fe_faxes <- as.matrix(fe_faxes[,-5]) # delete FE column
+
+fe_comm_biog <- func_ind_fe$details_fdfe$asb_fe_nbsp # community matrix of FE per province
+#color_fig = data.frame(color_p = c("#CD2626", "#FFA500", "#c95fa4","#3A5FCD", "#d1cb54", "#3acd88","#54cfd1", "#753232", "#b989f0", "#242323", "#03520c"),
+#color_ch = c("#CD262670", "#FFA50070", "#c95fa470","#3A5FCD70", "#d1cb5470", "#3acd8870", "#54cfd170", "#75323270", "#b989f070", "#24232370", "#03520c70")) # color points and convex hulls of figures
+#rownames(color_fig) <- rownames(fe_comm_biog)
+#write.csv(color_fig, "color_fig.csv")
+
+glob_tr <- tri.mesh(fe_faxes[,1],fe_faxes[,2]) # trigonometry Global Functional Space 1st and 2nd PCoA axes
+glob_ch <- convex.hull(glob_tr) # convex hull Global Functional Space
+
+# Plot province and Global functional spaces (1st & 2nd PCoA axes)
+par(mfrow = c(2,6), mai=c(rep(0.2, 4))) # set in between plots sizes
+
+for (i in rownames(fe_comm_biog)) {
+  
+  plot(fe_faxes[,1],fe_faxes[,2], type="n",
+       xlab = NA, ylab = NA, xaxt = "n", yaxt = "n",
+       xlim = c(-0.6, 0.35), ylim = c(-0.5, 0.35), main = i) # plot 
+  axis(1, labels = FALSE)
+  axis(2, labels = FALSE)
+  
+  rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "grey95") # grey background
+  polygon(glob_ch, col="white", border=NA) # Global Functional Space
+  
+  fe_prov <- colnames(fe_comm_biog)[which(fe_comm_biog[i,] > 0)] # select FE present at each province
+  fe_coord <- fe_faxes[rownames(fe_faxes) %in% fe_prov, c(1,2)] # select coordinates for present FE
+  tr <-tri.mesh(fe_coord[,1],fe_coord[,2]) # compute trigonometry
+  ch <- convex.hull(tr) # convex hull
+  
+  polygon(ch, col = color_fig[i,2], border = NA) # plot convex hull 
+  points(fe_coord[,1], fe_coord[,2], col = color_fig[i,1], pch = 19, cex = 1) # plot FE
+  points(func_ind_sp$details$asb_G_coord[[i]][1], func_ind_sp$details$asb_G_coord[[i]][2], col = "black", bg= color_fig[i,1], pch = 23, cex= 1.2) # plot center of gravity
+  text(-0.4, -0.325, labels = paste0(func_ind[i,"nb_sp"] , " sp"))
+  text(-0.4, -0.4, labels = paste0(func_ind[i,"nb_fe"] , " FEs"))
+  text(-0.35, -0.475, labels = paste0((round(func_ind[i,"fric"], 4)*100), "% FVol"))
+  
+} # Plot the 9 provinces functional spaces + n sp, n FE and FVol
+
+
+# Create a FE coordinate matrix in the functional space from species dissimilarities
+fe_faxes <- data.frame(PC1 = sp_faxes[, "PC1"], PC2 = sp_faxes[,"PC2"], PC3 = sp_faxes[,"PC3"], PC4 = sp_faxes[,"PC4"] ) # select species 4 first axes
+fe_faxes$fe <- func_ent$sp_fe # add FE to each species
+fe_faxes <- fe_faxes[c(which(duplicated(fe_faxes$fe) == FALSE)),] # select unique FE 
+rownames(fe_faxes) <- fe_faxes$fe # change rownames
+fe_faxes <- as.matrix(fe_faxes[,-5]) # delete FE column
+
+fe_comm_biog <- func_ind_fe$details_fdfe$asb_fe_nbsp # community matrix of FE per province
+
+glob_tr <- tri.mesh(fe_faxes[,1],fe_faxes[,2]) # trigonometry Global Functional Space 1st and 2nd PCoA axes
+glob_ch <- convex.hull(glob_tr) # convex hull Global Functional Space
+
+plot(fe_faxes[,1],fe_faxes[,2], type="n", xlab = "PCoA 1", ylab = "PCoA 2", xlim = c(-0.6, 0.35),
+     ylim = c(-0.5, 0.35), main = "Global Functional Space") # plot Global Functional space
+polygon(glob_ch, col="grey95", border=NA) # Global Functional Space
+
+fe_faxes <- as.data.frame(fe_faxes)
+fe_faxes$n_sp <- NA
+for (i in rownames(fe_faxes)) {
+  fe_faxes[i,"n_sp"] <- as.numeric(func_ent$fe_nb_sp[i])
+}
+
+fe_faxes$n_sp <- (fe_faxes$n_sp/511)*100
+fe_faxes$col <- NA
+fe_faxes[c(which(fe_faxes$n_sp != min(fe_faxes$n_sp))),"col"] = "#3A5FCD70"
+fe_faxes[c(which(fe_faxes$n_sp == min(fe_faxes$n_sp))),"col"] = "#CD262670"
+
+points(fe_faxes[,1], fe_faxes[,2], col = "#3A5FCD70", pch = 19, cex = c(fe_faxes$n_sp)) # plot FE
+legend(-0.6, 0.3, legend = c(30,20,10,1), 
+       col = "#3A5FCD70", pch = 19, bty = "n", 
+       pt.cex = c(5.87, 3.91, 1.96, 0.196))
+
+
+for (i in rownames(fe_comm_biog)) {
+  points(func_ind_sp$details$asb_G_coord[[i]][1], func_ind_sp$details$asb_G_coord[[i]][2], col = "black", bg= color_fig[i,1], pch = 23, cex= 1.2) # plot center of gravity of each province
+}
+
+# Kernel density of species distribution along the Functional space axes PCoA 1 & 2
+###################################################################################
+
+par(mfrow = c(2,6), mai=c(rep(0.2, 4))) # set in between plots sizes
+for (i in rownames(fe_comm_biog)) {
+  d <- density(func_ind_sp$details$asb_sp_faxes_coord[[i]][,1], adjust = 0.8, from = -0.8, to = 0.6)
+  plot(d, type = "n", ylab = "", xlab= "", main = "", xlim = c(-0.6, 0.35), ylim = c(0, 8))
+  polygon(d, col = color_fig[i,2], border = color_fig[i,1])
+} # plot Kernel density of species along PCoA 1
+
+d <- density(func_ind_sp$details$sp_faxes_coord[,1], adjust = 0.8, from = -0.8, to = 0.6)
+plot(d, type = "n", ylab = "", xlab= "", main = "", xlim = c(-0.6, 0.35), ylim = c(0, 8))
+polygon(d, col = "grey95", border = "grey") # plot Kernel density of species along PCoA 1 of the Global Functional Space
+
+par(mfrow = c(2,6), mai=c(rep(0.2, 4))) # set in between plots sizes
+for (i in rownames(fe_comm_biog)) {
+  d <- density(func_ind_sp$details$asb_sp_faxes_coord[[i]][,2], adjust = 0.8, from = -0.8, to = 0.6)
+  plot(d, type = "n", ylab = "", xlab= "", main = "", xlim = c(-0.5, 0.35), ylim = c(0, 8))
+  polygon(d, col = color_fig[i,2], border = color_fig[i,1])
+} # plot Kernel density of species along PCoA 2
+
+d <- density(func_ind_sp$details$sp_faxes_coord[,2], adjust = 0.8, from = -0.8, to = 0.6)
+plot(d, type = "n", ylab = "", xlab= "", main = "", xlim = c(-0.5, 0.35), ylim = c(0, 8))
+polygon(d, col = "grey95", border = "grey") # plot Kernel density of species along PCoA 2 of the Global Functional Space
+
+
+# Kernel density of species distribution along the Functional space axes PCoA 1
+
+par(mfrow = c(2,6), mai=c(rep(0.2, 4))) # set in between plots sizes
+# PCoA 1
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[1], xlim = c(-0.6, 0.35), ylim = c(0, 16))
+for (i in levels(sp_traits$Relative.Adult.Mobility)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Relative.Adult.Mobility == i)), 1],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Mob[,i],"70"), border = legend_info$Mob[,i]) # plot Kernel density of mobility trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[2], xlim = c(-0.6, 0.35), ylim = c(0, 16))
+for (i in levels(sp_traits$Estimated.Max.Body.Size)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Estimated.Max.Body.Size == i)), 1],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Size[,i],"70"), border = legend_info$Size[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[3], xlim = c(-0.6, 0.35), ylim = c(0, 16))
+for (i in unique(sp_traits$Habitat.Complexity)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Habitat.Complexity == i)), 1],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Hab.comp.[,i],"70"), border = legend_info$Hab.comp.[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[4], xlim = c(-0.6, 0.35), ylim = c(0, 16))
+for (i in levels(sp_traits$Chemosynthesis.Obligate)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Chemosynthesis.Obligate == i)), 1],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Ch.Obl.[,i],"70"), border = legend_info$Ch.Obl.[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[5], xlim = c(-0.6, 0.35), ylim = c(0, 16))
+for (i in levels(sp_traits$Zonation.From.Vent)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Zonation.From.Vent == i)), 1],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Zone[,i],"70"), border = legend_info$Zone[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[6], xlim = c(-0.6, 0.35), ylim = c(0, 16))
+for (i in unique(sp_traits$Feeding.Mode)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Feeding.Mode == i)), 1],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Feed[,i],"70"), border = legend_info$Feed[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+# PCoA 2
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[1], xlim = c(-0.5, 0.35), ylim = c(0, 16))
+for (i in levels(sp_traits$Relative.Adult.Mobility)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Relative.Adult.Mobility == i)), 2],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Mob[,i],"70"), border = legend_info$Mob[,i]) # plot Kernel density of mobility trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[2], xlim = c(-0.5, 0.35), ylim = c(0, 16))
+for (i in levels(sp_traits$Estimated.Max.Body.Size)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Estimated.Max.Body.Size == i)), 2],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Size[,i],"70"), border = legend_info$Size[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[3], xlim = c(-0.5, 0.35), ylim = c(0, 16))
+for (i in unique(sp_traits$Habitat.Complexity)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Habitat.Complexity == i)), 2],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Hab.comp.[,i],"70"), border = legend_info$Hab.comp.[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[4], xlim = c(-0.5, 0.35), ylim = c(0, 16))
+for (i in levels(sp_traits$Chemosynthesis.Obligate)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Chemosynthesis.Obligate == i)), 2],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Ch.Obl.[,i],"70"), border = legend_info$Ch.Obl.[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[5], xlim = c(-0.5, 0.35), ylim = c(0, 16))
+for (i in levels(sp_traits$Zonation.From.Vent)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Zonation.From.Vent == i)), 2],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Zone[,i],"70"), border = legend_info$Zone[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
+plot(d, type = "n", ylab = "", xlab= "", main = colnames(sp_traits)[6], xlim = c(-0.5, 0.35), ylim = c(0, 16))
+for (i in unique(sp_traits$Feeding.Mode)) {
+  d <- density(func_ind_sp$details$sp_faxes_coord[c(which(sp_traits$Feeding.Mode == i)), 2],
+               adjust = 0.8, from = -0.8, to = 0.6)
+  polygon(d, col = paste0(legend_info$Feed[,i],"70"), border = legend_info$Feed[,i]) # plot Kernel density of body size trait along PCoA 1 of the Global Functional Space
+}
+
