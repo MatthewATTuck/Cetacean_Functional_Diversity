@@ -6,7 +6,7 @@ This repository contains the R code required to replicate the analyses in **Tuck
 `mtuck_honours_Rscript.R` The Rstudio file that contains the code for the analysis.
 
 ## Data
-Data are available within the clean_data folder. 
+Data are available within the `clean_data` folder. 
 
 
 ## Contact
