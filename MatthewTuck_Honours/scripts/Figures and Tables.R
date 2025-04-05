@@ -984,3 +984,4 @@ for (i in levels(sp_traits_nm$prey_choice)) {
   polygon(d, col = paste0(legend_info$prey_choice[,i],"70"), border = legend_info$prey_choice[,i]) # plot Kernel density of mobility trait along PCoA 1 of the Global Functional Space
 }
 
+####END OF Code####

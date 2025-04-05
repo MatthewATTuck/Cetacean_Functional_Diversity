@@ -3,7 +3,7 @@
     "path": "~/GitHub/Matthew-Tuck-honours/MatthewTuck_Honours/scripts/Figures and Tables.R",
     "project_path": "scripts/Figures and Tables.R",
     "type": "r_source",
-    "hash": "2078388679",
+    "hash": "1997119541",
     "contents": "",
     "dirty": false,
     "created": 1736377747320.0,
@@ -12,16 +12,16 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "359,0",
-        "scrollLine": "334",
+        "cursorPosition": "986,19",
+        "scrollLine": "958",
         "disableDependencyDiscovery": "1"
     },
     "folds": "",
-    "lastKnownWriteTime": 1743819016,
+    "lastKnownWriteTime": 1743819249,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1743819016815,
+    "last_content_update": 1743819249789,
     "read_only": false,
     "read_only_alternatives": []
 }

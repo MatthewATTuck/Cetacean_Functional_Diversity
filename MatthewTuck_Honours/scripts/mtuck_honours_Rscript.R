@@ -468,3 +468,5 @@ citation()
 citation(package="mFD")
 citation(package="funrar")
 citation(package="FD")
+
+####END OF CODE####
