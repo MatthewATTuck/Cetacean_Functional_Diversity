@@ -23,7 +23,7 @@ family_proportions_plot<-ggplot(Family_data, aes(x=Location, y=Family_Proportion
   theme(axis.title.x = element_text(size=20, vjust = 0), axis.text.y =element_text(size=15, colour = "black"), axis.text.x =element_text(size=15, colour="black"))+
   labs(x = "Species Pool", y = "Proportion of Species")
 
-family_count_plot<-ggplot(Family_data, aes(x=Location, y=Family_Counts, fill=Common_Names))+
+family_count_plot<-ggplot(Family_data, aes(x=Location, y=Family_Counts, fill=Family))+
   geom_bar(stat = "identity", width=0.5, colour="black", show.legend=FALSE)+
   scale_fill_manual(values = c("#C15CCB", "#FF9900", "#0000FF","#00ff66","#333333", "#e9967a", "#ff3399", "yellow", "midnightblue", "#FF0000", "#00CCFF"))+
   theme_bw(base_size = 10)+
@@ -325,30 +325,38 @@ PCoA_prey
 
 
 PCoA_2<-ggplot(func_qual_nm$details_fspaces$sp_pc_coord, aes(x=func_qual_nm$details_fspaces$sp_pc_coord[,c(1)], y= func_qual_nm$details_fspaces$sp_pc_coord[, c(3)]))+
-  geom_point(size=10, aes(colour = ind_pceez)) +
-  scale_colour_manual(values=c("orange", "blue"), labels=c("Not Found in PCEEZ", "Found in PCEEZ"))+
+  geom_point(size=10, aes(colour = ind_pceez), show.legend=FALSE) +
+  scale_colour_manual(values=c("blue", "orange"), labels=c("Not Found in OPB", "Found in OPB"))+
   labs(x="PCoA 1 (62.76% of variation)", y="PCoA 3 (8.85% of variation)", colour="Presence in PCEEZ")+
   theme_bw(base_size = 15)+
+  scale_y_continuous(limits=c(-0.45, 0.3), expand=c(0,0))+
+  scale_x_continuous(limits=c(-0.55, 0.55), expand=c(0,0))+
   theme(text=element_text(size = 15))+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  theme(legend.position = "right", legend.title = element_text(size=28), legend.text = element_text(size=24)) +
+  theme(legend.position = "bottom", legend.title = element_blank(), legend.text = element_blank()) +
+  theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
   theme(axis.text=element_text(size=15, colour = "black"))+
   theme(axis.title.y = element_text(size=20, vjust = 3)) +
   theme(axis.title.x = element_text(size=20, vjust = -1))
+PCoA_2
 
 PCoA_3<-ggplot(func_qual_nm$details_fspaces$sp_pc_coord, aes(x=func_qual_nm$details_fspaces$sp_pc_coord[,c(2)], y= func_qual_nm$details_fspaces$sp_pc_coord[, c(3)]))+
   geom_point(size=10, aes(colour = ind_pceez), show.legend = FALSE) +
-  scale_colour_manual(values=c("orange", "blue"), labels=c("Not Found in PCEEZ", "Found in PCEEZ"))+
+  scale_colour_manual(values=c("blue", "orange"), labels=c("Not Found in PCEEZ", "Found in PCEEZ"))+
   labs(x="PCoA 2 (31.32% of variation)", y="PCoA 3 (8.85% of variation)", colour="Presence in PCEEZ")+
   theme_bw(base_size = 15)+
+  scale_y_continuous(limits=c(-0.45, 0.3), expand=c(0,0))+
+  scale_x_continuous(limits=c(-0.55, 0.45), expand=c(0,0))+
   theme(text=element_text(size = 15))+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  theme(legend.position = "right") +
+  theme(legend.position = "bottom") +
+  theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))+
   theme(axis.text=element_text(size=15, colour = "black"))+
   theme(axis.title.y = element_text(size= 20, vjust = 3)) +
   theme(axis.title.x = element_text(size=20, vjust = -1))
+PCoA_3
 
-ggarrange(PCoA_1, PCoA_2, PCoA_3, ncol=1, labels=c("a","b","c"),font.label=list(color="black",size=20), align = "v")
+ggarrange(PCoA_2, PCoA_3, ncol=2, nrow=1, labels=c("A", "B"),font.label=list(color="black",size=20), align = "v")
 ggarrange(PCoA_length, PCoA_mass, PCoA_ratio, PCoA_dentition, PCoA_diving, PCoA_groups, PCoA_prey, ncol=4, nrow=2, labels = c("Maximum Length (m)", "Maximum Mass (kg)", "Maximum Mass/Length Ratio (kg/m)", "Dentition", "Maximum Diving Depth", "Average Group Size", "Prey Choice"), font.label = list(colour="black", size=28), align = "v")
 
 ####Plots for Functional Indicies (NEED TO UPDATE AFTER SETTING SEEDS OR ANY OTHER CHANGE TO FUNCTIONAL INDICIES)####
@@ -644,6 +652,110 @@ write.csv(color_fig, "color_fig.csv")
 
 install.packages("tripack")
 library(tripack)
+glob_tr <- tri.mesh(fe_faxes[,1],fe_faxes[,2]) # trigonometry Global Functional Space 1st and 2nd PCoA axes
+glob_ch <- convex.hull(glob_tr) # convex hull Global Functional Space
+
+# Plot province and Global functional spaces (1st & 2nd PCoA axes)
+par(mfrow = c(1,2), mai=c(rep(0.2, 4))) # set in between plots sizes
+
+for (i in rownames(fe_comm_biog)) {
+  
+  plot(fe_faxes[,1],fe_faxes[,2], type="n",
+       xlab = NA, ylab = NA, xaxt = "n", yaxt = "n",
+       xlim = c(-0.55, 0.55), ylim = c(-0.55, 0.45), main = i) # plot 
+  axis(1, labels = FALSE)
+  axis(2, labels = FALSE)
+  
+  rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "grey95") # grey background
+  polygon(glob_ch, col="white", border=NA) # Global Functional Space
+  
+  fe_prov <- colnames(fe_comm_biog)[which(fe_comm_biog[i,] > 0)] # select FE present at each province
+  fe_coord <- fe_faxes[rownames(fe_faxes) %in% fe_prov, c(1,2)] # select coordinates for present FE
+  tr <-tri.mesh(fe_coord[,1],fe_coord[,2]) # compute trigonometry
+  ch <- convex.hull(tr) # convex hull
+  
+  polygon(ch, col = color_fig[i,2], border = NA) # plot convex hull 
+  points(fe_coord[,1], fe_coord[,2], col = color_fig[i,1], pch = 19, cex = 1) # plot FE
+  points(func_ind_sp_nm$details$asb_G_coord[[i]][1], func_ind_sp_nm$details$asb_G_coord[[i]][2], col = "black", bg= color_fig[i,1], pch = 23, cex= 1.2) # plot center of gravity
+  
+} # Plot the functioanl sapces of the PCEEZ and the Global pool
+
+
+# Create a FE coordinate matrix in the functional space from species dissimilarities
+plot(fe_faxes[,1],fe_faxes[,2], type="n", xlab = "PCoA 1", ylab = "PCoA 2", xlim = c(-0.55, 0.55),
+     ylim = c(-0.55, 0.45), main = "Global Functional Space") # plot Global Functional space
+polygon(glob_ch, col="grey95", border=NA) # Global Functional Space
+
+fe_faxes <- as.data.frame(fe_faxes)
+fe_faxes$n_sp <- NA
+for (i in rownames(fe_faxes)) {
+  fe_faxes[i,"n_sp"] <- as.numeric(func_ent_nm$fe_nb_sp[i])
+}
+
+fe_faxes$n_sp <- (fe_faxes$n_sp/88)*100
+fe_faxes$col <- NA
+fe_faxes[c(which(fe_faxes$n_sp != min(fe_faxes$n_sp))),"col"] = "#3A5FCD70"
+fe_faxes[c(which(fe_faxes$n_sp == min(fe_faxes$n_sp))),"col"] = "#CD262670"
+
+points(fe_faxes[,1], fe_faxes[,2], col = "#3A5FCD70", pch = 19, cex = c(fe_faxes$n_sp)) # plot FE
+legend(-0.5, 0.3, legend = c(9,6,5, 4, 3, 2, 1), 
+       col = "#3A5FCD70", pch = 19, bty = "n", 
+       pt.cex = c(10.227273, 6.818182, 5.681818, 4.545455, 3.409091, 2.272727, 1.136364))
+
+
+for (i in rownames(fe_comm_biog)) {
+  points(func_ind_sp_nm$details$asb_G_coord[[i]][1], func_ind_sp_nm$details$asb_G_coord[[i]][2], col = "black", bg= color_fig[i,1], pch = 23, cex= 1.2) # plot center of gravity of each province
+}
+
+
+##
+glob_tr2 <- tri.mesh(fe_faxes[,1],fe_faxes[,3]) # trigonometry Global Functional Space 1st and 2nd PCoA axes
+glob_ch2 <- convex.hull(glob_tr) # convex hull Global Functional Space
+
+# Plot province and Global functional spaces (1st & 2nd PCoA axes)
+par(mfrow = c(1,2), mai=c(rep(0.2, 4))) # set in between plots sizes
+
+for (i in rownames(fe_comm_biog)) {
+  
+  plot(fe_faxes[,1],fe_faxes[,3], type="n",
+       xlab = NA, ylab = NA, xaxt = "n", yaxt = "n",
+       xlim = c(-0.55, 0.55), ylim = c(-0.45, 0.3), main = i) # plot 
+  axis(1, labels = FALSE)
+  axis(2, labels = FALSE)
+  
+  rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "grey95") # grey background
+  polygon(glob_ch2, col="white", border=NA) # Global Functional Space
+  
+  fe_prov2 <- colnames(fe_comm_biog)[which(fe_comm_biog[i,] > 0)] # select FE present at each province
+  fe_coord2 <- fe_faxes[rownames(fe_faxes) %in% fe_prov2, c(1,2)] # select coordinates for present FE
+  tr2 <-tri.mesh(fe_coord2[,1],fe_coord2[,3]) # compute trigonometry
+  ch2 <- convex.hull(tr) # convex hull
+  
+  polygon(ch, col = color_fig[i,2], border = NA) # plot convex hull 
+  points(fe_coord[,1], fe_coord[,3], col = color_fig[i,1], pch = 19, cex = 1) # plot FE
+  points(func_ind_sp_nm$details$asb_G_coord[[i]][1], func_ind_sp_nm$details$asb_G_coord[[i]][3], col = "black", bg= color_fig[i,1], pch = 23, cex= 1.2) # plot center of gravity
+  
+} # Plot the functioanl sapces of the PCEEZ and the Global pool
+
+
+# Create a FE coordinate matrix in the functional space from species dissimilarities
+plot(fe_faxes[,1],fe_faxes[,3], type="n", xlab = "PCoA 1", ylab = "PCoA 2", xlim = c(-0.55, 0.55),
+     ylim = c(-0.45, 0.3), main = "Global Functional Space") # plot Global Functional space
+polygon(glob_ch, col="grey95", border=NA) # Global Functional Space
+
+
+points(fe_faxes[,1], fe_faxes[,3], col = "#3A5FCD70", pch = 19, cex = c(fe_faxes$n_sp)) # plot FE
+legend(-0.5, 0.3, legend = c(9,6,5, 4, 3, 2, 1), 
+       col = "#3A5FCD70", pch = 19, bty = "n", 
+       pt.cex = c(10.227273, 6.818182, 5.681818, 4.545455, 3.409091, 2.272727, 1.136364))
+
+
+for (i in rownames(fe_comm_biog)) {
+  points(func_ind_sp_nm$details$asb_G_coord[[i]][1], func_ind_sp_nm$details$asb_G_coord[[i]][3], col = "black", bg= color_fig[i,1], pch = 23, cex= 1.2) # plot center of gravity of each province
+}
+
+
+##
 glob_tr <- tri.mesh(fe_faxes[,1],fe_faxes[,2]) # trigonometry Global Functional Space 1st and 2nd PCoA axes
 glob_ch <- convex.hull(glob_tr) # convex hull Global Functional Space
 
